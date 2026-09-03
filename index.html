@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-    <!--test-->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Adurite Digital Store</title>
+    <title>Adurite Digital Store - Premium Digital Products</title>
     <link rel="stylesheet" href="styles/style.css">
 </head>
 <body>
@@ -14,12 +13,11 @@
                 <h1>Adurite<span>.org</span></h1>
             </div>
             <nav class="nav">
-                <a href="#home">Home</a>
-                <a href="#products">Products</a>
-                <a href="#categories">Categories</a>
-                <a href="#about">About</a>
-                <a href="#contact">Contact</a>
-                <a href="#cart" class="cart-link">
+                <a href="index.html">Home</a>
+                <a href="products.html">Products</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+                <a href="cart.html" class="cart-link">
                     <span>Cart</span>
                     <span class="cart-count">0</span>
                 </a>
@@ -28,15 +26,35 @@
     </header>
 
     <main>
-        <section id="home" class="hero">
+        <section id="hero" class="hero">
             <div class="container">
                 <h2>Premium Digital Products</h2>
                 <p>High-quality digital assets for creators and professionals</p>
-                <a href="#products" class="btn primary-btn">Browse Products</a>
+                <a href="products.html" class="btn primary-btn">Browse Products</a>
             </div>
         </section>
 
-        <section id="products" class="products-section">
+        <section class="features-section">
+            <div class="container">
+                <h2 class="section-title">Why Choose Adurite?</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <h3>Instant Delivery</h3>
+                        <p>Get your digital products immediately after purchase</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Secure Payments</h3>
+                        <p>Bank-level security for all transactions</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>24/7 Support</h3>
+                        <p>Our team is always ready to help you</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="featured-products" class="products-section">
             <div class="container">
                 <h2 class="section-title">Featured Products</h2>
                 <div class="product-grid" id="productGrid">
@@ -45,7 +63,7 @@
             </div>
         </section>
 
-        <section id="categories" class="categories-section">
+        <section class="categories-section">
             <div class="container">
                 <h2 class="section-title">Product Categories</h2>
                 <div class="category-grid">
@@ -70,10 +88,10 @@
         <div class="container">
             <p>&copy; 2026 Adurite Digital Store. All rights reserved.</p>
             <div class="footer-links">
-                <a href="#about">About Us</a>
-                <a href="#terms">Terms</a>
-                <a href="#privacy">Privacy</a>
-                <a href="#contact">Contact</a>
+                <a href="about.html">About Us</a>
+                <a href="contact.html">Contact</a>
+                <a href="#">Terms</a>
+                <a href="#">Privacy</a>
             </div>
         </div>
     </footer>
