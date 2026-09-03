@@ -5,7 +5,7 @@ const products = [
         name: "Digital Design Template",
         price: 19.99,
         description: "Premium design template for professional use",
-        image: "assets/images/template.jpg",
+        image: "assets/images/placeholder.jpg",
         category: "Design Templates"
     },
     {
@@ -13,7 +13,7 @@ const products = [
         name: "Software License Key",
         price: 29.99,
         description: "Full license for professional software",
-        image: "assets/images/software.jpg",
+        image: "assets/images/placeholder.jpg",
         category: "Software Licenses"
     },
     {
@@ -21,7 +21,7 @@ const products = [
         name: "E-book Collection",
         price: 9.99,
         description: "Comprehensive guide for digital creators",
-        image: "assets/images/ebook.jpg",
+        image: "assets/images/placeholder.jpg",
         category: "E-books & Guides"
     },
     {
@@ -29,7 +29,7 @@ const products = [
         name: "UI/UX Design Kit",
         price: 24.99,
         description: "Complete design system for modern interfaces",
-        image: "assets/images/uxkit.jpg",
+        image: "assets/images/placeholder.jpg",
         category: "Design Templates"
     },
     {
@@ -37,7 +37,7 @@ const products = [
         name: "Marketing Analytics Dashboard",
         price: 39.99,
         description: "Professional analytics dashboard for marketers",
-        image: "assets/images/analytics.jpg",
+        image: "assets/images/placeholder.jpg",
         category: "Design Templates"
     },
     {
@@ -45,7 +45,7 @@ const products = [
         name: "Business Strategy Guide",
         price: 14.99,
         description: "Complete guide for business development",
-        image: "assets/images/business.jpg",
+        image: "assets/images/placeholder.jpg",
         category: "E-books & Guides"
     }
 ];
@@ -68,6 +68,19 @@ document.addEventListener('DOMContentLoaded', () => {
             const productId = parseInt(e.target.closest('.add-to-cart-btn').dataset.id);
             addToCart(productId);
         }
+    });
+    
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
+        });
     });
 });
 
@@ -110,15 +123,7 @@ function showNotification(message) {
     alert(message);
 }
 
-// GitHub Deployment Instructions
-function setupGitHub() {
-    // This would be used to guide you through the GitHub setup
-    console.log('To deploy to GitHub Pages:');
-    console.log('1. Create a new repository on GitHub');
-    console.log('2. Push your code to GitHub');
-    console.log('3. Enable GitHub Pages in repository settings');
-    console.log('4. Set source to "main" branch');
-}
-
-// Initialize GitHub setup
-setupGitHub();
+// Scroll to top on page load
+window.addEventListener('load', function() {
+    window.scrollTo(0, 0);
+});
