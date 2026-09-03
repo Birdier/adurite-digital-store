@@ -86,7 +86,42 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+    
+    // Mobile menu toggle
+    setupMobileMenu();
 });
+
+// Setup mobile menu
+function setupMobileMenu() {
+    const nav = document.querySelector('.nav');
+    const menuToggle = document.createElement('div');
+    menuToggle.className = 'menu-toggle';
+    menuToggle.innerHTML = '☰';
+    menuToggle.style.display = 'none';
+    menuToggle.style.cursor = 'pointer';
+    menuToggle.style.fontSize = '1.5rem';
+    menuToggle.style.padding = '0.5rem';
+    
+    document.querySelector('.header').insertBefore(menuToggle, document.querySelector('.nav'));
+    
+    // Media query for mobile menu
+    const mobileQuery = window.matchMedia('(max-width: 768px)');
+    
+    function handleMobileMenu(e) {
+        if (e.matches) {
+            menuToggle.style.display = 'block';
+            menuToggle.addEventListener('click', function() {
+                nav.classList.toggle('mobile-active');
+            });
+        } else {
+            menuToggle.style.display = 'none';
+            nav.classList.remove('mobile-active');
+        }
+    }
+    
+    handleMobileMenu(mobileQuery);
+    mobileQuery.addListener(handleMobileMenu);
+}
 
 // Display products
 function displayProducts() {
@@ -128,7 +163,45 @@ function updateCartCount() {
 
 // Show notification
 function showNotification(message) {
-    alert(message);
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = 'notification';
+    notification.textContent = message;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #4CAF50;
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 5px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        z-index: 1000;
+        animation: slideIn 0.3s;
+        transition: opacity 0.3s;
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 300);
+    }, 3000);
+    
+    // Add slideIn animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+    `;
+    document.head.appendChild(style);
 }
 
 // Filter functionality for products page
@@ -158,3 +231,21 @@ function filterProducts(category) {
     // For now, we'll just show all products
     displayProducts();
 }
+
+// Enhanced mobile functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle window resize for responsive design
+    window.addEventListener('resize', function() {
+        // Adjust layout based on screen size
+        if (window.innerWidth > 768) {
+            document.querySelector('.nav').classList.remove('mobile-active');
+        }
+    });
+    
+    // Touch event support for mobile
+    if ('ontouchstart' in window) {
+        document.addEventListener('touchstart', function(e) {
+            // Handle touch events for mobile
+        }, { passive: true });
+    }
+});
