@@ -6,7 +6,7 @@ const products = [
         price: 19.99,
         description: "Premium design template for professional use",
         image: "assets/images/placeholder.jpg",
-        category: "Design Templates"
+        category: "design"
     },
     {
         id: 2,
@@ -14,7 +14,7 @@ const products = [
         price: 29.99,
         description: "Full license for professional software",
         image: "assets/images/placeholder.jpg",
-        category: "Software Licenses"
+        category: "software"
     },
     {
         id: 3,
@@ -22,7 +22,7 @@ const products = [
         price: 9.99,
         description: "Comprehensive guide for digital creators",
         image: "assets/images/placeholder.jpg",
-        category: "E-books & Guides"
+        category: "guides"
     },
     {
         id: 4,
@@ -30,7 +30,7 @@ const products = [
         price: 24.99,
         description: "Complete design system for modern interfaces",
         image: "assets/images/placeholder.jpg",
-        category: "Design Templates"
+        category: "design"
     },
     {
         id: 5,
@@ -38,7 +38,7 @@ const products = [
         price: 39.99,
         description: "Professional analytics dashboard for marketers",
         image: "assets/images/placeholder.jpg",
-        category: "Design Templates"
+        category: "design"
     },
     {
         id: 6,
@@ -46,7 +46,7 @@ const products = [
         price: 14.99,
         description: "Complete guide for business development",
         image: "assets/images/placeholder.jpg",
-        category: "E-books & Guides"
+        category: "guides"
     }
 ];
 
@@ -59,7 +59,11 @@ const cartCount = document.querySelector('.cart-count');
 
 // Initialize the website
 document.addEventListener('DOMContentLoaded', () => {
-    displayProducts();
+    // Different initialization based on page
+    if (document.getElementById('productGrid')) {
+        displayProducts();
+    }
+    
     updateCartCount();
     
     // Add event listeners for cart functionality
@@ -86,6 +90,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Display products
 function displayProducts() {
+    if (!productGrid) return;
+    
     productGrid.innerHTML = '';
     
     products.forEach(product => {
@@ -114,16 +120,41 @@ function addToCart(productId) {
 
 // Update cart count
 function updateCartCount() {
-    cartCount.textContent = cart.length;
+    const cartCountElement = document.querySelector('.cart-count');
+    if (cartCountElement) {
+        cartCountElement.textContent = cart.length;
+    }
 }
 
 // Show notification
 function showNotification(message) {
-    // Simple notification - in a real app you'd use a better notification system
     alert(message);
 }
 
-// Scroll to top on page load
-window.addEventListener('load', function() {
-    window.scrollTo(0, 0);
+// Filter functionality for products page
+document.addEventListener('DOMContentLoaded', function() {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    
+    if (filterButtons.length > 0) {
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                const filter = this.getAttribute('data-filter');
+                filterProducts(filter);
+            });
+        });
+    }
 });
+
+function filterProducts(category) {
+    const productGrid = document.getElementById('productGrid');
+    if (!productGrid) return;
+    
+    // This would filter products in a real implementation
+    // For now, we'll just show all products
+    displayProducts();
+}
