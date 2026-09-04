@@ -32,7 +32,6 @@
                 <div class="cart-content">
                     <div class="cart-items" id="cartItems">
                         <!-- Cart items will be loaded here -->
-                        <p class="empty-cart">Your cart is empty</p>
                     </div>
                     <div class="cart-summary">
                         <h3>Order Summary</h3>
@@ -100,15 +99,9 @@
             const cartItems = document.getElementById('cartItems');
             const checkoutBtn = document.getElementById('checkoutBtn');
             
-            // Check if cart has items
-            const cartCount = document.querySelector('.cart-count');
-            if (cartCount) {
-                cartCount.textContent = '0';
-            }
-            
-            // Simple checkout functionality
+            // This would be implemented with a real payment processing system
             checkoutBtn.addEventListener('click', function() {
-                alert('Proceeding to checkout. In a real store, this would redirect to payment processing.');
+                alert('In a real store, this would redirect to payment processing. For now, your cart is saved in browser storage.');
             });
         });
     </script>
