@@ -410,6 +410,7 @@ body {
     text-align: center;
     padding: 2rem;
     color: var(--text-gray);
+    font-style: italic;
 }
 
 .cart-summary {
