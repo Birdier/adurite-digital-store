@@ -669,6 +669,30 @@ body {
     margin-top: 2rem;
 }
 
+/* Legal Section */
+.legal-section {
+    padding: 3rem 0;
+    background: var(--card-bg);
+    border-radius: 10px;
+    margin: 2rem 0;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.legal-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.legal-content h3 {
+    color: var(--primary-color);
+    margin: 1rem 0 0.5rem 0;
+}
+
+.legal-content p {
+    margin-bottom: 1rem;
+    color: var(--text-gray);
+}
+
 /* Footer */
 .footer {
     background: var(--darker-bg);
@@ -880,11 +904,4 @@ body {
 @keyframes slideIn {
     from { transform: translateX(100%); }
     to { transform: translateX(0); }
-}
-
-/* Loading Animation */
-.loading {
-    text-align: center;
-    padding: 2rem;
-    color: var(--text-gray);
 }
