@@ -1,4 +1,4 @@
-// --- FULL ENHANCED main.js ---
+// --- FULL WORKING main.js ---
 
 const PRODUCTS_STORAGE_KEY = 'aduriteProducts';
 const CART_STORAGE_KEY = 'aduriteCart';
@@ -19,14 +19,22 @@ let cart = [];
 function loadCart() {
     const cartData = localStorage.getItem(CART_STORAGE_KEY);
     if (cartData) {
-        cart = JSON.parse(cartData);
+        try {
+            cart = JSON.parse(cartData);
+        } catch (e) {
+            cart = [];
+        }
     } else {
         cart = [];
     }
 }
 
 function saveCart() {
-    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+    try {
+        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+    } catch (e) {
+        console.error('Failed to save cart:', e);
+    }
 }
 
 // --- PRODUCT DISPLAY ---
@@ -93,32 +101,43 @@ function renderCart() {
     const subtotalEl = document.getElementById('subtotal');
     const totalEl = document.getElementById('total');
     
-    cartItemsContainer.innerHTML = '';
-    let subtotal = 0;
-
+    if (cartItemsContainer && cartItemsContainer.classList.contains('empty-cart')) {
+        cartItemsContainer.classList.remove('empty-cart');
+    }
+    
     if (cart.length === 0) {
-        cartItemsContainer.innerHTML = '<p class="empty-cart">Your cart is empty</p>';
-        subtotalEl.textContent = '$0.00';
-        totalEl.textContent = '$0.00';
+        if (cartItemsContainer) {
+            cartItemsContainer.innerHTML = '<p class="empty-cart">Your cart is empty</p>';
+        }
+        if (subtotalEl) subtotalEl.textContent = '$0.00';
+        if (totalEl) totalEl.textContent = '$0.00';
         return;
     }
 
+    let subtotal = 0;
+    
+    if (cartItemsContainer) {
+        cartItemsContainer.innerHTML = '';
+    }
+    
     cart.forEach(item => {
         const itemTotal = item.product.price * item.quantity;
         subtotal += itemTotal;
 
-        const cartItemDiv = document.createElement('div');
-        cartItemDiv.className = 'cart-item';
-        cartItemDiv.innerHTML = `
-            <p>${item.product.name} (x${item.quantity})</p>
-            <p>$${itemTotal.toFixed(2)}</p>
-            <button class="remove-btn" data-id="${item.product.id}">✕</button>
-        `;
-        cartItemsContainer.appendChild(cartItemDiv);
+        if (cartItemsContainer) {
+            const cartItemDiv = document.createElement('div');
+            cartItemDiv.className = 'cart-item';
+            cartItemDiv.innerHTML = `
+                <p>${item.product.name} (x${item.quantity})</p>
+                <p>$${itemTotal.toFixed(2)}</p>
+                <button class="remove-btn" data-id="${item.product.id}">✕</button>
+            `;
+            cartItemsContainer.appendChild(cartItemDiv);
+        }
     });
 
-    subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
-    totalEl.textContent = `$${subtotal.toFixed(2)}`;
+    if (subtotalEl) subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+    if (totalEl) totalEl.textContent = `$${subtotal.toFixed(2)}`;
 }
 
 // --- SEARCH FUNCTIONALITY ---
@@ -179,18 +198,33 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+    
+    // Initialize with all products
+    displayProducts(products);
+    
+    // Setup filter buttons
+    setTimeout(() => {
+        setupFilterButtons();
+    }, 100);
 });
 
 // --- FILTER BUTTONS ---
-document.addEventListener('DOMContentLoaded', () => {
+function setupFilterButtons() {
     const filterButtons = document.querySelectorAll('.filter-btn');
-    filterButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const filter = this.getAttribute('data-filter');
-            filterProducts(filter);
+    if (filterButtons.length > 0) {
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                const filter = this.getAttribute('data-filter');
+                filterProducts(filter);
+            });
         });
-    });
-});
+    }
+}
 
 // --- Notification System ---
 function showNotification(message) {
@@ -211,6 +245,7 @@ function showNotification(message) {
         animation: slideIn 0.3s;
         transition: opacity 0.3s;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        max-width: 300px;
     `;
     
     document.body.appendChild(notification);
@@ -236,13 +271,15 @@ function showNotification(message) {
     document.head.appendChild(style);
 }
 
-// --- Advanced Product Details ---
-function showProductDetails(productId) {
-    // In a real app, this would fetch details from an API or database
-    const product = products.find(p => p.id === productId);
+// --- Initialize everything ---
+document.addEventListener('DOMContentLoaded', () => {
+    // Make sure cart count is updated
+    updateCartCount();
     
-    if (product) {
-        // This is where you'd navigate to a detailed view page
-        alert(`Viewing details for: ${product.name}`);
+    // Ensure search works on all pages
+    if (document.getElementById('search-input')) {
+        document.getElementById('search-input').addEventListener('input', function() {
+            searchProducts(this.value);
+        });
     }
-}
+});
