@@ -1,9 +1,9 @@
-// --- ENHANCED main.js with Local Storage Persistence ---
+// --- FULL ENHANCED main.js ---
 
 const PRODUCTS_STORAGE_KEY = 'aduriteProducts';
 const CART_STORAGE_KEY = 'aduriteCart';
 
-// Sample product data (Keep this the same)
+// Sample product data
 const products = [
     { id: 1, name: "Digital Design Template", price: 19.99, description: "Premium design template for professional use", image: "assets/images/placeholder.jpg", category: "design" },
     { id: 2, name: "Software License Key", price: 29.99, description: "Full license for professional software", image: "assets/images/placeholder.jpg", category: "software" },
@@ -13,9 +13,9 @@ const products = [
     { id: 6, name: "Business Strategy Guide", price: 14.99, description: "Complete guide for business development", image: "assets/images/placeholder.jpg", category: "guides" }
 ];
 
+let cart = [];
 
-// --- CORE FUNCTIONS ---
-
+// --- LOCAL STORAGE HANDLING ---
 function loadCart() {
     const cartData = localStorage.getItem(CART_STORAGE_KEY);
     if (cartData) {
@@ -29,7 +29,7 @@ function saveCart() {
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
 }
 
-
+// --- PRODUCT DISPLAY ---
 function displayProducts(filteredProducts = products) {
     const productGrid = document.getElementById('productGrid');
     if (!productGrid) return;
@@ -50,6 +50,7 @@ function displayProducts(filteredProducts = products) {
     });
 }
 
+// --- CART MANAGEMENT ---
 function addToCart(productId) {
     const product = products.find(p => p.id === productId);
     if (product) {
@@ -62,9 +63,19 @@ function addToCart(productId) {
             // New item, add to cart
             cart.push({ product: product, quantity: 1 });
         }
-        saveCart(); // <-- THIS IS THE KEY STEP!
+        saveCart(); // Save to localStorage
         updateCartCount();
         showNotification(`${product.name} added to cart!`);
+    }
+}
+
+function removeFromCart(productId) {
+    const index = cart.findIndex(item => item.product.id === productId);
+    if (index !== -1) {
+        cart.splice(index, 1);
+        saveCart();
+        updateCartCount();
+        renderCart();
     }
 }
 
@@ -101,6 +112,7 @@ function renderCart() {
         cartItemDiv.innerHTML = `
             <p>${item.product.name} (x${item.quantity})</p>
             <p>$${itemTotal.toFixed(2)}</p>
+            <button class="remove-btn" data-id="${item.product.id}">✕</button>
         `;
         cartItemsContainer.appendChild(cartItemDiv);
     });
@@ -109,8 +121,21 @@ function renderCart() {
     totalEl.textContent = `$${subtotal.toFixed(2)}`;
 }
 
+// --- SEARCH FUNCTIONALITY ---
+function searchProducts(query) {
+    if (!query.trim()) {
+        displayProducts(products);
+        return;
+    }
+    
+    const filtered = products.filter(product => 
+        product.name.toLowerCase().includes(query.toLowerCase()) ||
+        product.description.toLowerCase().includes(query.toLowerCase())
+    );
+    displayProducts(filtered);
+}
 
-// --- FILTERING LOGIC (For products.html) ---
+// --- FILTERING LOGIC ---
 function filterProducts(category) {
     const filtered = category === 'all' 
         ? products 
@@ -118,18 +143,29 @@ function filterProducts(category) {
     displayProducts(filtered);
 }
 
-
-// --- INITIALIZATION ---
+// --- NAVIGATION SETUP ---
 document.addEventListener('DOMContentLoaded', () => {
     loadCart(); // Load cart data from storage on startup
-    displayProducts(); // Load initial products
     updateCartCount();
     
-    // Event listeners setup (Keep these the same)
+    // Setup search functionality
+    const searchInput = document.getElementById('search-input');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            searchProducts(this.value);
+        });
+    }
+    
+    // Event listeners setup
     document.addEventListener('click', (e) => {
         if (e.target.closest('.add-to-cart-btn')) {
             const productId = parseInt(e.target.closest('.add-to-cart-btn').dataset.id);
             addToCart(productId);
+        }
+        
+        if (e.target.closest('.remove-btn')) {
+            const productId = parseInt(e.target.closest('.remove-btn').dataset.id);
+            removeFromCart(productId);
         }
     });
     
@@ -145,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Function to handle filter button clicks (Needs to be called on products.html load)
+// --- FILTER BUTTONS ---
 document.addEventListener('DOMContentLoaded', () => {
     const filterButtons = document.querySelectorAll('.filter-btn');
     filterButtons.forEach(button => {
@@ -155,3 +191,58 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+// --- Notification System ---
+function showNotification(message) {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = 'notification';
+    notification.textContent = message;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #4CAF50;
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 5px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        z-index: 1000;
+        animation: slideIn 0.3s;
+        transition: opacity 0.3s;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 300);
+    }, 3000);
+    
+    // Add slideIn animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+// --- Advanced Product Details ---
+function showProductDetails(productId) {
+    // In a real app, this would fetch details from an API or database
+    const product = products.find(p => p.id === productId);
+    
+    if (product) {
+        // This is where you'd navigate to a detailed view page
+        alert(`Viewing details for: ${product.name}`);
+    }
+}
