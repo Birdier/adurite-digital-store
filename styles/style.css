@@ -874,6 +874,7 @@ body {
     animation: slideIn 0.3s;
     transition: opacity 0.3s;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    max-width: 300px;
 }
 
 @keyframes slideIn {
