@@ -22,6 +22,7 @@ function loadCart() {
         try {
             cart = JSON.parse(cartData);
         } catch (e) {
+            console.error('Failed to parse cart:', e);
             cart = [];
         }
     } else {
@@ -101,6 +102,7 @@ function renderCart() {
     const subtotalEl = document.getElementById('subtotal');
     const totalEl = document.getElementById('total');
     
+    // Ensure we have the container
     if (cartItemsContainer && cartItemsContainer.classList.contains('empty-cart')) {
         cartItemsContainer.classList.remove('empty-cart');
     }
@@ -282,4 +284,31 @@ document.addEventListener('DOMContentLoaded', () => {
             searchProducts(this.value);
         });
     }
+    
+    // Handle product detail page initialization
+    if (document.querySelector('.product-title')) {
+        const productId = 1; // This would be dynamically set for each product page
+        updateCartCount();
+        renderCart();
+    }
 });
+
+// --- Thumbnail Handling ---
+function setupThumbnailClicks() {
+    const thumbnails = document.querySelectorAll('.thumbnail');
+    thumbnails.forEach(thumb => {
+        thumb.addEventListener('click', function() {
+            // Remove active class from all thumbnails
+            thumbnails.forEach(t => t.classList.remove('active'));
+            
+            // Add active class to clicked thumbnail
+            this.classList.add('active');
+            
+            // Update main image (in a real implementation, you'd change the src)
+            const mainImage = document.getElementById('main-image');
+            if (mainImage) {
+                mainImage.src = this.src;
+            }
+        });
+    });
+}
