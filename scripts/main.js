@@ -103,30 +103,24 @@ function renderCart() {
     const totalEl = document.getElementById('total');
     
     // Ensure we have the container
-    if (cartItemsContainer && cartItemsContainer.classList.contains('empty-cart')) {
-        cartItemsContainer.classList.remove('empty-cart');
-    }
-    
-    if (cart.length === 0) {
-        if (cartItemsContainer) {
-            cartItemsContainer.innerHTML = '<p class="empty-cart">Your cart is empty</p>';
-        }
-        if (subtotalEl) subtotalEl.textContent = '$0.00';
-        if (totalEl) totalEl.textContent = '$0.00';
-        return;
-    }
-
-    let subtotal = 0;
-    
     if (cartItemsContainer) {
+        // Clear previous content
         cartItemsContainer.innerHTML = '';
-    }
-    
-    cart.forEach(item => {
-        const itemTotal = item.product.price * item.quantity;
-        subtotal += itemTotal;
+        
+        if (cart.length === 0) {
+            cartItemsContainer.innerHTML = '<p class="empty-cart">Your cart is empty</p>';
+            if (subtotalEl) subtotalEl.textContent = '$0.00';
+            if (totalEl) totalEl.textContent = '$0.00';
+            return;
+        }
+        
+        let subtotal = 0;
+        
+        // Add each item to the cart
+        cart.forEach(item => {
+            const itemTotal = item.product.price * item.quantity;
+            subtotal += itemTotal;
 
-        if (cartItemsContainer) {
             const cartItemDiv = document.createElement('div');
             cartItemDiv.className = 'cart-item';
             cartItemDiv.innerHTML = `
@@ -135,11 +129,11 @@ function renderCart() {
                 <button class="remove-btn" data-id="${item.product.id}">✕</button>
             `;
             cartItemsContainer.appendChild(cartItemDiv);
-        }
-    });
+        });
 
-    if (subtotalEl) subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
-    if (totalEl) totalEl.textContent = `$${subtotal.toFixed(2)}`;
+        if (subtotalEl) subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+        if (totalEl) totalEl.textContent = `$${subtotal.toFixed(2)}`;
+    }
 }
 
 // --- SEARCH FUNCTIONALITY ---
@@ -275,7 +269,7 @@ function showNotification(message) {
 
 // --- Initialize everything ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Make sure cart count is updated
+    // Make sure cart count is updated on all pages
     updateCartCount();
     
     // Ensure search works on all pages
@@ -287,7 +281,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Handle product detail page initialization
     if (document.querySelector('.product-title')) {
-        const productId = 1; // This would be dynamically set for each product page
         updateCartCount();
         renderCart();
     }
@@ -312,3 +305,15 @@ function setupThumbnailClicks() {
         });
     });
 }
+
+// --- Page-specific initialization ---
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize cart on all pages
+    updateCartCount();
+    
+    // Handle product detail page specifically
+    const productPage = document.querySelector('.product-detail-section');
+    if (productPage) {
+        renderCart();
+    }
+});
