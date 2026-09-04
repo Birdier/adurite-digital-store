@@ -48,6 +48,8 @@ function displayProducts(filteredProducts = products) {
     filteredProducts.forEach(product => {
         const productCard = document.createElement('div');
         productCard.className = 'product-card';
+        // Add data-id attribute for click handling
+        productCard.setAttribute('data-product-id', product.id);
         productCard.innerHTML = `
             <img src="${product.image}" alt="${product.name}">
             <h3>${product.name}</h3>
@@ -279,9 +281,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // Handle product detail page initialization
-    if (document.querySelector('.product-title')) {
-        updateCartCount();
+    // Handle product detail page specifically
+    const productPage = document.querySelector('.product-detail-section');
+    if (productPage) {
         renderCart();
     }
 });
@@ -306,14 +308,18 @@ function setupThumbnailClicks() {
     });
 }
 
-// --- Page-specific initialization ---
+// --- Handle Product Card Clicks ---
 document.addEventListener('DOMContentLoaded', function() {
+    // Add click handlers to product cards
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.product-card')) {
+            const productId = e.target.closest('.product-card').dataset.productId;
+            if (productId) {
+                window.location.href = `product_detail.html?id=${productId}`;
+            }
+        }
+    });
+    
     // Initialize cart on all pages
     updateCartCount();
-    
-    // Handle product detail page specifically
-    const productPage = document.querySelector('.product-detail-section');
-    if (productPage) {
-        renderCart();
-    }
 });
